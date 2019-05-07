@@ -31,8 +31,12 @@ public class MyReceiver extends BroadcastReceiver {
                 wifiConnected = activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
                 mobileConnected = activeInfo.getType() == ConnectivityManager.TYPE_MOBILE;
                 if(wifiConnected) {
+                    Intent in = new Intent(context, ActivityDialog.class);
+                    in.addFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(in);
+
                     Log.i(TAG, context.getString(R.string.wifi_connection));
-                } else if (mobileConnected && MyService.dialogOnScreen == false){
+                } else if (mobileConnected && !MyService.dialogOnScreen){
 
 
                     Intent in = new Intent(context, ActivityDialog.class);
@@ -47,6 +51,7 @@ public class MyReceiver extends BroadcastReceiver {
 
                 }
             } else {
+
                 Log.i(TAG, context.getString(R.string.no_wifi_or_mobile));
             }
             // END_INCLUDE(connect)

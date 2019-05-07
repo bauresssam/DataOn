@@ -9,7 +9,7 @@ public class ActivityDialog extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
 
-        if(MyService.dialogOnScreen == false) {
+        if(!MyService.dialogOnScreen) {
             super.onCreate(savedInstanceState);
             MyService.dialogOnScreen = true;
             TurnWifiOn newFragment = new TurnWifiOn();

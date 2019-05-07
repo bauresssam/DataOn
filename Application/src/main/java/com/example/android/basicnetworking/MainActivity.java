@@ -29,17 +29,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 
 import com.example.android.common.logger.Log;
 import com.example.android.common.logger.LogFragment;
 import com.example.android.common.logger.LogWrapper;
 import com.example.android.common.logger.MessageOnlyLogFilter;
 
-import static android.app.Service.STOP_FOREGROUND_DETACH;
-import static android.app.Service.STOP_FOREGROUND_REMOVE;
 
 /**
  * Sample application demonstrating how to test whether a device is connected,
@@ -118,14 +114,14 @@ public class MainActivity extends FragmentActivity {
                 return true;
             case R.id.kill:
                 //https://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-on-android
-                    if (i !=null && isOn == true){
+                    if (i !=null && isOn){
                         isOn =false;
                         MyService.isOn = false;
                         stopService(i);
                         i = null;
                         item.setTitle("START");
                         return true;
-                }else if (i == null | isOn == false){
+                }else if (i == null | !isOn){
 
                         isOn = true;
                         MyService.isOn = true;
