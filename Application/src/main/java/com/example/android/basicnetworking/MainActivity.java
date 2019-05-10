@@ -57,8 +57,9 @@ public class MainActivity extends FragmentActivity {
     // as necessary.
     private LogFragment mLogFragment;
 
-    Intent i;
+    protected Intent i;
     public static boolean isOn;
+    public static boolean activityOnScreen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,18 +82,25 @@ public class MainActivity extends FragmentActivity {
 
 
 
+
 //add here
 
 
 
         ContextCompat.startForegroundService(this, i);
 
-
-
-
-        isOn = true;
-
-
+//        final ConnectivityManager connMgr =
+//                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
+//
+//        if (activeInfo != null && activeInfo.isConnected()) {
+//            wifiConnected = activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
+//            mobileConnected = activeInfo.getType() == ConnectivityManager.TYPE_MOBILE;
+//            if( !MyService.dialogOnScreen && !wifiConnected && mobileConnected ) {
+//                TurnWifiOn newFragment = new TurnWifiOn();
+//                newFragment.show(getSupportFragmentManager(), "missiles");
+//            }
+//        }
     }
 
     @Override

@@ -2,8 +2,12 @@ package com.example.android.basicnetworking;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -18,7 +22,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 
+
+import java.util.Objects;
+
+
 public class TurnWifiOn extends DialogFragment {
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        MyService.dialogOnScreen = true;
+    }
 
 
 
@@ -26,7 +40,7 @@ public class TurnWifiOn extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
 
-
+        MyService.dialogOnScreen = true;
 
         // https://stackoverflow.com/questions/6186433/clear-back-stack-using-fragments
 
@@ -43,14 +57,14 @@ public class TurnWifiOn extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                         wifiManager.setWifiEnabled(true);
-                        ((FragmentActivity) getContext()).finish();
+                        ((ActivityDialog) Objects.requireNonNull(getContext())).finish();
                     }
 
                 })
                 .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         TurnWifiOn.this.getDialog().cancel();
-                        ((FragmentActivity) getContext()).finish();
+                        ((FragmentActivity) Objects.requireNonNull(getContext())).finish();
                     }
                 });
 
@@ -62,7 +76,7 @@ public class TurnWifiOn extends DialogFragment {
 
                 if ((keyCode ==  android.view.KeyEvent.KEYCODE_BACK))
                 {
-                    ((FragmentActivity) getContext()).finish();
+                    ((FragmentActivity) Objects.requireNonNull(getContext())).finish();
                     return true;
                 }
                 else
@@ -81,6 +95,7 @@ public class TurnWifiOn extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //https://stackoverflow.com/questions/9698410/position-of-dialogfragment-in-android
+        MyService.dialogOnScreen = true;
         Window w = getDialog().getWindow();
                 w.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
         w.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -96,7 +111,49 @@ public class TurnWifiOn extends DialogFragment {
 
     @Override
     public void onCancel(DialogInterface dialog) {
-        ((FragmentActivity) getContext()).finish();
         super.onCancel(dialog);
+        MyService.dialogOnScreen = false;
+        ((ActivityDialog) Objects.requireNonNull(getContext())).finish();
+        //onDestroyView();
+
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        MyService.dialogOnScreen = false;
+        ((ActivityDialog) Objects.requireNonNull(getContext())).finish();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+//        // BEGIN_INCLUDE(connect)
+//        final ConnectivityManager connMgr =
+//                (ConnectivityManager) this.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
+//        if (activeInfo != null && activeInfo.isConnected()) {
+//            wifiConnected = activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
+//            mobileConnected = activeInfo.getType() == ConnectivityManager.TYPE_MOBILE;
+//            if(mobileConnected  && MyService.dialogOnScreen) {
+//                ((FragmentActivity) Objects.requireNonNull(this.getContext())).finish();
+//            } else if (!mobileConnected && MyService.dialogOnScreen){
+//
+//            }
+//        }
+
+    }
+
+
+
+
 }
+

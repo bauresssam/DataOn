@@ -44,6 +44,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
 
+
     sourceSets {
         main {
             dirs.each { dir ->

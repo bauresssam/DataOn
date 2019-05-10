@@ -15,7 +15,8 @@
         android:text="Your data is on"
         android:textColor="@android:color/white"
         android:textSize="20dp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:padding="10dp"/>
 
 
     <LinearLayout
@@ -23,7 +24,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="#3E80B4"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+
+        >
 
 
     </LinearLayout>
