@@ -12,10 +12,9 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
+
 import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
 
 public class MyService extends Service {
 
@@ -126,13 +125,16 @@ super.onRebind(intent);
 
             //https://developer.android.com/guide/components/broadcasts
             IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-//            filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-            this.registerReceiver(broadCastReceiver, filter);
+            filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+            registerReceiver(broadCastReceiver, filter);
+
+
 
             //https://stackoverflow.com/questions/47531742/startforeground-fail-after-upgrade-to-android-8-1
             IntentFilter screenStateFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
             screenStateFilter.addAction(Intent.ACTION_USER_PRESENT);
-            this.registerReceiver(broadCastReceiver, screenStateFilter);
+            registerReceiver(broadCastReceiver, screenStateFilter);
+
 
         return Service.START_STICKY;
     }

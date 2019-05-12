@@ -2,12 +2,8 @@ package com.example.android.basicnetworking;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -20,8 +16,6 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentActivity;
-
 
 import java.util.Objects;
 
@@ -64,7 +58,8 @@ public class TurnWifiOn extends DialogFragment {
                 .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         TurnWifiOn.this.getDialog().cancel();
-                        ((FragmentActivity) Objects.requireNonNull(getContext())).finish();
+//                        ((FragmentActivity) Objects.requireNonNull(getContext())).finish();
+                        dismiss();
                     }
                 });
 
@@ -76,7 +71,8 @@ public class TurnWifiOn extends DialogFragment {
 
                 if ((keyCode ==  android.view.KeyEvent.KEYCODE_BACK))
                 {
-                    ((FragmentActivity) Objects.requireNonNull(getContext())).finish();
+                        dismiss();
+//                    ((FragmentActivity) Objects.requireNonNull(getContext())).finish();
                     return true;
                 }
                 else
@@ -113,7 +109,8 @@ public class TurnWifiOn extends DialogFragment {
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
         MyService.dialogOnScreen = false;
-        ((ActivityDialog) Objects.requireNonNull(getContext())).finish();
+        dismiss();
+        //        ((ActivityDialog) Objects.requireNonNull(getContext())).finish();
         //onDestroyView();
 
     }

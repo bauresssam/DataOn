@@ -19,6 +19,8 @@
     <string name="clear_text">Clear</string>
     <string name="wifi_connection">The active connection is wifi.</string>
     <string name="mobile_connection">The active connection is mobile.</string>
+    <string name="no_mobile_connection">No active connection mobile.</string>
+    <string name="no_wifi_connection">No active connection mobile.</string>
     <string name="no_wifi_or_mobile">No wireless or mobile connection.</string>
     <string name="title_activity_dialog">ActivityDialog</string>
     <string name="color">#00000000</string>

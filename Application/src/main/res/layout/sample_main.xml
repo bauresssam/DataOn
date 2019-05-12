@@ -86,7 +86,8 @@
             android:layout_weight="0"
             android:padding="10dp"
             android:layout_width="wrap_content"
-            android:background="#3E80B4"/>
+            android:background="#3E80B4"
+            android:id="@+id/a_switch"/>
 
 </LinearLayout>
 </LinearLayout>

@@ -16,17 +16,15 @@
 
 package com.example.android.basicnetworking;
 
-import android.app.ActivityManager;
-import android.app.AlertDialog;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -47,11 +45,7 @@ import com.example.android.common.logger.MessageOnlyLogFilter;
  */
 public class MainActivity extends FragmentActivity {
 
-    public static final String TAG = "Basic Network Demo";
-    // Whether there is a Wi-Fi connection.
-    public static boolean wifiConnected = false;
-    // Whether there is a mobile connection.
-    public static boolean mobileConnected = false;
+
 
     // Reference to the fragment showing events, so we can clear it with a button
     // as necessary.
@@ -59,8 +53,7 @@ public class MainActivity extends FragmentActivity {
 
     protected Intent i;
     public static boolean isOn;
-    public static boolean activityOnScreen;
-
+    Network network = new Network();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -81,26 +74,13 @@ public class MainActivity extends FragmentActivity {
 
 
 
-
-
 //add here
 
 
 
         ContextCompat.startForegroundService(this, i);
 
-//        final ConnectivityManager connMgr =
-//                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
-//
-//        if (activeInfo != null && activeInfo.isConnected()) {
-//            wifiConnected = activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
-//            mobileConnected = activeInfo.getType() == ConnectivityManager.TYPE_MOBILE;
-//            if( !MyService.dialogOnScreen && !wifiConnected && mobileConnected ) {
-//                TurnWifiOn newFragment = new TurnWifiOn();
-//                newFragment.show(getSupportFragmentManager(), "missiles");
-//            }
-//        }
+
     }
 
     @Override
@@ -111,10 +91,11 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             // When the user clicks TEST, display the connection status.
             case R.id.test_action:
-                checkNetworkConnection();
+                network.checkNetworkConnection(getBaseContext());
                 return true;
             // Clear the log view fragment.
             case R.id.clear_action:
@@ -148,24 +129,7 @@ public class MainActivity extends FragmentActivity {
      * Check whether the device is connected, and if so, whether the connection
      * is wifi or mobile (it could be something else).
      */
-    private void checkNetworkConnection() {
-      // BEGIN_INCLUDE(connect)
-      ConnectivityManager connMgr =
-          (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-      NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
-      if (activeInfo != null && activeInfo.isConnected()) {
-          wifiConnected = activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
-          mobileConnected = activeInfo.getType() == ConnectivityManager.TYPE_MOBILE;
-          if(wifiConnected) {
-              Log.i(TAG, getString(R.string.wifi_connection));
-          } else if (mobileConnected){
-              Log.i(TAG, getString(R.string.mobile_connection));
-          }
-      } else {
-          Log.i(TAG, getString(R.string.no_wifi_or_mobile));
-      }
-      // END_INCLUDE(connect)
-    }
+
 
     /** Create a chain of targets that will receive log data */
     public void initializeLogging() {
@@ -187,5 +151,38 @@ public class MainActivity extends FragmentActivity {
         msgFilter.setNext(mLogFragment.getLogView());
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        final String network = new Network().checkNetworkConnection(getApplicationContext());
+
+        Switch aSwitch = (Switch) findViewById(R.id.a_switch);
+        boolean isChecked = aSwitch.isChecked();
+        if(network.equals(getString(R.string.no_wifi_connection))){
+            aSwitch.setChecked(false);
+
+        }else if(network.equals(getString(R.string.wifi_connection))){
+            aSwitch.setChecked(true);
+
+
+        }
+
+        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+                if(network.equals(getString(R.string.wifi_connection))){
+                    wifiManager.setWifiEnabled(false);
+                }else if(network.equals(getString(R.string.no_wifi_connection))){
+                    wifiManager.setWifiEnabled(true);
+
+                }
+
+            }
+
+    });
+
+}
 }
