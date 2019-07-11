@@ -34,6 +34,8 @@ import com.example.android.common.logger.LogFragment;
 import com.example.android.common.logger.LogWrapper;
 import com.example.android.common.logger.MessageOnlyLogFilter;
 
+import java.util.ArrayList;
+
 
 /**
  * Sample application demonstrating how to test whether a device is connected,
@@ -70,15 +72,14 @@ public class MainActivity extends FragmentActivity {
         // Initialize the logging framework.
         initializeLogging();
         // use this to start and trigger a service
-        i= new Intent(getBaseContext(), MyService.class);
 
 
 
-//add here
 
+        i= new Intent(getApplicationContext(), MyService.class);
+        i.putExtra("ACTIVITY_ON", true);
 
-
-        ContextCompat.startForegroundService(this, i);
+        ContextCompat.startForegroundService(getApplicationContext(), i);
 
 
     }
@@ -155,14 +156,22 @@ public class MainActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
 
-        final String network = new Network().checkNetworkConnection(getApplicationContext());
+
+
+        i.putExtra("ACTIVITY_ON", true);
+
+        ContextCompat.startForegroundService(getApplicationContext(), i);
+
+
+
+        final ArrayList<String> network = new Network().checkNetworkConnection(getApplicationContext());
 
         Switch aSwitch = (Switch) findViewById(R.id.a_switch);
         boolean isChecked = aSwitch.isChecked();
-        if(network.equals(getString(R.string.no_wifi_connection))){
+        if(network.contains(getString(R.string.no_wifi_connection))){
             aSwitch.setChecked(false);
 
-        }else if(network.equals(getString(R.string.wifi_connection))){
+        }else if(network.contains(getString(R.string.wifi_connection))){
             aSwitch.setChecked(true);
 
 
@@ -173,10 +182,10 @@ public class MainActivity extends FragmentActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-                if(network.equals(getString(R.string.wifi_connection))){
-                    wifiManager.setWifiEnabled(false);
-                }else if(network.equals(getString(R.string.no_wifi_connection))){
+                if(isChecked){
                     wifiManager.setWifiEnabled(true);
+                }else if(!isChecked){
+                    wifiManager.setWifiEnabled(false);
 
                 }
 
@@ -185,4 +194,14 @@ public class MainActivity extends FragmentActivity {
     });
 
 }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        i.putExtra("ACTIVITY_ON", false);
+
+        ContextCompat.startForegroundService(getApplicationContext(), i);
+    }
+
+    //TODO reciver
 }

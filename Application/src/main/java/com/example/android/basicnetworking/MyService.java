@@ -116,9 +116,11 @@ super.onRebind(intent);
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        if (!(intent.getBooleanExtra("ACTIVITY_ON", true))) {
+
 //        https://stackoverflow.com/questions/5888502/how-to-detect-when-wifi-connection-has-been-established-in-android
             ActivityDialog.CloseDialogReceiver closeDialogReceiver = new ActivityDialog.CloseDialogReceiver();
-            IntentFilter intentFilter = new IntentFilter(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+            IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
             registerReceiver(closeDialogReceiver, intentFilter);
 
             MyReceiver broadCastReceiver = new MyReceiver();
@@ -129,12 +131,11 @@ super.onRebind(intent);
             registerReceiver(broadCastReceiver, filter);
 
 
-
             //https://stackoverflow.com/questions/47531742/startforeground-fail-after-upgrade-to-android-8-1
             IntentFilter screenStateFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
             screenStateFilter.addAction(Intent.ACTION_USER_PRESENT);
             registerReceiver(broadCastReceiver, screenStateFilter);
-
+        }
 
         return Service.START_STICKY;
     }

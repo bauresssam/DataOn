@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
+import java.util.ArrayList;
 
 public class MyReceiver extends BroadcastReceiver {
 
@@ -15,16 +15,19 @@ public class MyReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, Intent intent) {
         String TAG = "Basic Network Demo";
 
-        String network = new Network().checkNetworkConnection(context);
+        ArrayList<String> networkState = new Network().checkNetworkConnection(context);
 
-                    if (!MyService.dialogOnScreen && network.equals(context.getString(R.string.mobile_connection))){
+        //TODO: this in reciver inbeded class in main activity
 
+                    if (!MyService.dialogOnScreen && networkState.contains(context.getString(R.string.mobile_connection))){
 
 
                         Intent in = new Intent(context, ActivityDialog.class);
                         //not when activity is open
-                        in.addFlags(FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        in.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK |
+                        Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         context.startActivity(in);
+                        MyService.dialogOnScreen = true;
                     /*
 
                     Toast toast = Toast.makeText(context,  context.getString(R.string.mobile_connection),Toast.LENGTH_LONG);

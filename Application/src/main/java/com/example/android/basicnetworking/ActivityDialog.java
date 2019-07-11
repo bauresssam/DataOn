@@ -27,6 +27,8 @@ public class ActivityDialog extends FragmentActivity {
 
         super.onCreate(savedInstanceState);
         MyService.dialogOnScreen = true;
+
+        //TODO launch dialog main activity reciver
         newFragment = new TurnWifiOn();
         newFragment.show(getSupportFragmentManager(), "missiles");
 
@@ -60,7 +62,6 @@ public class ActivityDialog extends FragmentActivity {
 
     @Override
     protected void onStop() {
-
         super.onStop();
 
     }
@@ -91,7 +92,7 @@ public class ActivityDialog extends FragmentActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-                                 if(MyService.dialogOnScreen) {
+                                 if(MyService.dialogOnScreen ) {
                                      MyService.dialogOnScreen = false;
                                      kill();
                                  }

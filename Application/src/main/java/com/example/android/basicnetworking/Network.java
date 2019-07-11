@@ -6,9 +6,14 @@ import android.net.NetworkInfo;
 
 import com.example.android.common.logger.Log;
 
+import java.util.ArrayList;
+
 class Network {
 
-    public String checkNetworkConnection(Context context) {
+    public ArrayList<String> checkNetworkConnection(Context context) {
+
+        ArrayList<String> networkState = new ArrayList<>();
+
         final String TAG = "Basic Network Demo";
         // Whether there is a Wi-Fi connection.
         boolean wifiConnected = false;
@@ -19,29 +24,36 @@ class Network {
         ConnectivityManager connMgr =
                 (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
+
+
         if (activeInfo != null && activeInfo.isConnected()) {
             wifiConnected = activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
             mobileConnected = activeInfo.getType() == ConnectivityManager.TYPE_MOBILE;
             if (wifiConnected) {
                 Log.i(TAG, context.getString(R.string.wifi_connection));
-                return context.getString(R.string.wifi_connection);
-
+                networkState.add(context.getString(R.string.wifi_connection));
+                //return context.getString(R.string.wifi_connection);
             } else if (mobileConnected) {
                 Log.i(TAG, context.getString(R.string.mobile_connection));
-                return context.getString(R.string.mobile_connection);
-            }
-        } else if (!wifiConnected) {
-            Log.i(TAG, context.getString(R.string.no_wifi_connection));
-            return context.getString(R.string.no_wifi_connection);
-
-        } else if (!mobileConnected) {
-            Log.i(TAG, context.getString(R.string.no_mobile_connection));
-            return context.getString(R.string.no_mobile_connection);
-        } else if (!mobileConnected && !wifiConnected){
+                networkState.add(context.getString(R.string.mobile_connection));
+                //return context.getString(R.string.mobile_connection);
+            } else if (!wifiConnected) {
+                Log.i(TAG, context.getString(R.string.no_wifi_connection));
+                networkState.add(context.getString(R.string.no_wifi_connection));
+                //return context.getString(R.string.no_wifi_connection);
+            } else if (!mobileConnected) {
+                Log.i(TAG, context.getString(R.string.no_mobile_connection));
+                networkState.add(context.getString(R.string.no_mobile_connection));
+                //return context.getString(R.string.no_mobile_connection);
+            } else if (!mobileConnected && !wifiConnected) {
                 Log.i(TAG, context.getString(R.string.no_wifi_or_mobile));
-                return context.getString(R.string.no_wifi_or_mobile);
+                networkState.add(context.getString(R.string.no_wifi_or_mobile));
+                //return context.getString(R.string.no_wifi_or_mobile);
 
             }
-            return null;
         }
+        //return context.getString(R.string.no_wifi_or_mobile);
+        return networkState;
+    }
+
     }
