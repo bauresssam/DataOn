@@ -40,7 +40,7 @@ public class ActivityDialog extends FragmentActivity {
     protected void onPause() {
 
         super.onPause();
-
+        MyService.dialogOnScreen = false;
     }
 
     @Override
@@ -64,6 +64,7 @@ public class ActivityDialog extends FragmentActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        MyService.dialogOnScreen = false;
 
     }
 

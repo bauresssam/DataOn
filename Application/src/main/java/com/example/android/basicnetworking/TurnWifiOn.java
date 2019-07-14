@@ -126,10 +126,10 @@ public class TurnWifiOn extends DialogFragment {
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
       //  ((ActivityDialog) Objects.requireNonNull(getContext().getApplicationContext())).finish();
+        MyService.dialogOnScreen = false;
 
         dismiss();
         ((ActivityDialog) Objects.requireNonNull(getContext())).finish();
-        MyService.dialogOnScreen = false;
 
         //onDestroyView();
 
@@ -201,6 +201,10 @@ public class TurnWifiOn extends DialogFragment {
     public void onDestroy() {
         super.onDestroy();
 
+        MyService.dialogOnScreen = false;
+
     }
+
+
 }
 

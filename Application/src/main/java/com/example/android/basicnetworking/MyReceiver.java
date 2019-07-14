@@ -23,13 +23,14 @@ public class MyReceiver extends BroadcastReceiver {
                         Intent in = new Intent(context.getApplicationContext(), ActivityDialog.class);
                         //not when activity is open
                         in.addFlags(
-                                Intent.FLAG_ACTIVITY_NEW_TASK |
+
                                         Intent.FLAG_ACTIVITY_CLEAR_TOP |
                                 Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                                        Intent.FLAG_ACTIVITY_NO_ANIMATION
+                                        Intent.FLAG_ACTIVITY_NEW_TASK |
+                                Intent.FLAG_ACTIVITY_NO_ANIMATION
                                  );
-                        context.startActivity(in);
                         MyService.dialogOnScreen = true;
+                        context.startActivity(in);
                     /*
 
                     Toast toast = Toast.makeText(context,  context.getString(R.string.mobile_connection),Toast.LENGTH_LONG);
