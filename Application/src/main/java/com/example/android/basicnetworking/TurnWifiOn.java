@@ -23,6 +23,12 @@ import java.util.Objects;
 public class TurnWifiOn extends DialogFragment {
 
     @Override
+    public void onStart() {
+        super.onStart();
+        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         MyService.dialogOnScreen = true;
@@ -87,6 +93,12 @@ public class TurnWifiOn extends DialogFragment {
 
 
 
+
+
+
+
+
+
         return  builder.create();
     }
 
@@ -113,10 +125,11 @@ public class TurnWifiOn extends DialogFragment {
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
-        MyService.dialogOnScreen = false;
       //  ((ActivityDialog) Objects.requireNonNull(getContext().getApplicationContext())).finish();
+
         dismiss();
         ((ActivityDialog) Objects.requireNonNull(getContext())).finish();
+        MyService.dialogOnScreen = false;
 
         //onDestroyView();
 
@@ -125,13 +138,15 @@ public class TurnWifiOn extends DialogFragment {
     @Override
     public void onStop() {
         super.onStop();
+        MyService.dialogOnScreen = false;
     //    ((ActivityDialog) Objects.requireNonNull(getContext().getApplicationContext())).finish();
     }
 
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        ((ActivityDialog) Objects.requireNonNull(getContext())).finish();
+        MyService.dialogOnScreen = false;
+        //((ActivityDialog) Objects.requireNonNull(getContext())).finish();
 
     }
 
@@ -140,20 +155,23 @@ public class TurnWifiOn extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        MyService.dialogOnScreen = false;
         //((ActivityDialog) Objects.requireNonNull(getContext().getApplicationContext())).finish();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
+        MyService.dialogOnScreen = true;
 
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
+        MyService.dialogOnScreen = false;
+        dismiss();
+        ((ActivityDialog) Objects.requireNonNull(getContext())).finish();
 
 //        // BEGIN_INCLUDE(connect)
 //        final ConnectivityManager connMgr =
@@ -175,7 +193,7 @@ public class TurnWifiOn extends DialogFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-
+        MyService.dialogOnScreen = false;
 
     }
 

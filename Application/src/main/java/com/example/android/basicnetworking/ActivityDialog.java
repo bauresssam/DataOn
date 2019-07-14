@@ -30,6 +30,7 @@ public class ActivityDialog extends FragmentActivity {
 
         //TODO launch dialog main activity reciver
         newFragment = new TurnWifiOn();
+
         newFragment.show(getSupportFragmentManager(), "missiles");
 
 

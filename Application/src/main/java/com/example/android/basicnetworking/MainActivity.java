@@ -61,6 +61,9 @@ public class MainActivity extends FragmentActivity {
 
 
         super.onCreate(savedInstanceState);
+
+
+
         setContentView(R.layout.sample_main);
 
         // Initialize text fragment that displays intro text.
@@ -76,10 +79,7 @@ public class MainActivity extends FragmentActivity {
 
 
 
-        i= new Intent(getApplicationContext(), MyService.class);
-        i.putExtra("ACTIVITY_ON", true);
 
-        ContextCompat.startForegroundService(getApplicationContext(), i);
 
 
     }
@@ -158,10 +158,6 @@ public class MainActivity extends FragmentActivity {
 
 
 
-        i.putExtra("ACTIVITY_ON", true);
-
-        ContextCompat.startForegroundService(getApplicationContext(), i);
-
 
 
         final ArrayList<String> network = new Network().checkNetworkConnection(getApplicationContext());
@@ -196,6 +192,21 @@ public class MainActivity extends FragmentActivity {
 }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        i.putExtra("ACTIVITY_ON", false);
+
+        ContextCompat.startForegroundService(getApplicationContext(), i);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         i.putExtra("ACTIVITY_ON", false);
@@ -204,4 +215,14 @@ public class MainActivity extends FragmentActivity {
     }
 
     //TODO reciver
+
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        i= new Intent(getApplicationContext(), MyService.class);
+        i.putExtra("ACTIVITY_ON", true);
+        ContextCompat.startForegroundService(getApplicationContext(), i);
+
+    }
 }

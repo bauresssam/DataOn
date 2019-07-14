@@ -23,6 +23,10 @@ public class MyService extends Service {
     //TODO: getters and setters
     static boolean dialogOnScreen = false;
 
+    ActivityDialog.CloseDialogReceiver closeDialogReceiver = new ActivityDialog.CloseDialogReceiver();
+
+    MyReceiver broadCastReceiver = new MyReceiver();
+
     @Override
     public void onRebind(Intent intent) {
 
@@ -113,28 +117,32 @@ super.onRebind(intent);
         super.onDestroy();
     }
 
+
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (!(intent.getBooleanExtra("ACTIVITY_ON", true))) {
+
+
+        if (!(intent.getBooleanExtra("ACTIVITY_ON", true)) && !MyService.dialogOnScreen) {
 
 //        https://stackoverflow.com/questions/5888502/how-to-detect-when-wifi-connection-has-been-established-in-android
-            ActivityDialog.CloseDialogReceiver closeDialogReceiver = new ActivityDialog.CloseDialogReceiver();
             IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
             registerReceiver(closeDialogReceiver, intentFilter);
 
-            MyReceiver broadCastReceiver = new MyReceiver();
 
             //https://developer.android.com/guide/components/broadcasts
-            IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-            filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+            IntentFilter filter = new IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+            filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
             registerReceiver(broadCastReceiver, filter);
 
 
             //https://stackoverflow.com/questions/47531742/startforeground-fail-after-upgrade-to-android-8-1
             IntentFilter screenStateFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-            screenStateFilter.addAction(Intent.ACTION_USER_PRESENT);
+           // screenStateFilter.addAction(Intent.ACTION_USER_PRESENT);
             registerReceiver(broadCastReceiver, screenStateFilter);
+        }else {
+
         }
 
         return Service.START_STICKY;

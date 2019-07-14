@@ -4,8 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import java.util.ArrayList;
-
 public class MyReceiver extends BroadcastReceiver {
 
 
@@ -15,17 +13,21 @@ public class MyReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, Intent intent) {
         String TAG = "Basic Network Demo";
 
-        ArrayList<String> networkState = new Network().checkNetworkConnection(context);
+
 
         //TODO: this in reciver inbeded class in main activity
 
-                    if (!MyService.dialogOnScreen && networkState.contains(context.getString(R.string.mobile_connection))){
+                    if (!MyService.dialogOnScreen && new Network().checkNetworkConnection(context).contains(context.getString(R.string.mobile_connection))){
 
 
-                        Intent in = new Intent(context, ActivityDialog.class);
+                        Intent in = new Intent(context.getApplicationContext(), ActivityDialog.class);
                         //not when activity is open
-                        in.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP|
-                        Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        in.addFlags(
+                                Intent.FLAG_ACTIVITY_NEW_TASK |
+                                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                        Intent.FLAG_ACTIVITY_NO_ANIMATION
+                                 );
                         context.startActivity(in);
                         MyService.dialogOnScreen = true;
                     /*
