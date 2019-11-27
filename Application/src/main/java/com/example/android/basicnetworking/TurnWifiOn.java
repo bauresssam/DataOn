@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +29,30 @@ public class TurnWifiOn extends DialogFragment {
     public void onStart() {
         super.onStart();
         getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        Button buttonTwo = (Button) getDialog().findViewById(R.id.button2);
+        buttonTwo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                wifiManager.setWifiEnabled(true);
+                MyService.dialogOnScreen = false;
+
+                dismiss();
+            }
+        });
+
+        Button buttonThree = (Button) getDialog().findViewById(R.id.button3);
+        buttonThree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TurnWifiOn.this.getDialog().cancel();
+//                        ((FragmentActivity) Objects.requireNonNull(getContext())).finish();
+                MyService.dialogOnScreen = false;
+
+                dismiss();
+            }
+        });
     }
 
     @Override
@@ -50,28 +77,30 @@ public class TurnWifiOn extends DialogFragment {
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        builder.setView(inflater.inflate(R.layout.turn_wifi_on, null))
-                // Add action buttons
-                .setPositiveButton("TURN WIFI ON", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                        wifiManager.setWifiEnabled(true);
-                        MyService.dialogOnScreen = false;
+        builder.setView(inflater.inflate(R.layout.turn_wifi_on, null));
+//                // Add action buttons
+//                .setPositiveButton("TURN WIFI ON", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+//                        wifiManager.setWifiEnabled(true);
+//                        MyService.dialogOnScreen = false;
+//
+//                        dismiss();
+//                    }
+//
+//                })
+//                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        TurnWifiOn.this.getDialog().cancel();
+////                        ((FragmentActivity) Objects.requireNonNull(getContext())).finish();
+//                        MyService.dialogOnScreen = false;
+//
+//                        dismiss();
+//                    }
+//                });
 
-                        dismiss();
-                    }
 
-                })
-                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        TurnWifiOn.this.getDialog().cancel();
-//                        ((FragmentActivity) Objects.requireNonNull(getContext())).finish();
-                        MyService.dialogOnScreen = false;
-
-                        dismiss();
-                    }
-                });
 
         // https://stackoverflow.com/questions/21307858/detect-back-button-but-dont-dismiss-dialogfragment
         builder.setOnKeyListener(new DialogInterface.OnKeyListener()
@@ -119,6 +148,10 @@ public class TurnWifiOn extends DialogFragment {
 
 
         getDialog().getWindow().setAttributes(p);
+
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 

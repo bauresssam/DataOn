@@ -13,18 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+//
+//                Copyright 2019 Samuel Arthur Bauress
+//
+//                Licensed under the Apache License, Version 2.0 (the "License");
+//                you may not use this file except in compliance with the License.
+//                You may obtain a copy of the License at
+//
+//                http://www.apache.org/licenses/LICENSE-2.0
+//
+//                Unless required by applicable law or agreed to in writing, software
+//                distributed under the License is distributed on an "AS IS" BASIS,
+//                WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//                See the License for the specific language governing permissions and
+//                limitations under the License.
+//
+//
+
 
 package com.example.android.basicnetworking;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CompoundButton;
-import android.widget.Switch;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -33,8 +51,6 @@ import com.example.android.common.logger.Log;
 import com.example.android.common.logger.LogFragment;
 import com.example.android.common.logger.LogWrapper;
 import com.example.android.common.logger.MessageOnlyLogFilter;
-
-import java.util.ArrayList;
 
 
 /**
@@ -54,7 +70,6 @@ public class MainActivity extends FragmentActivity {
     private LogFragment mLogFragment;
 
     protected Intent i;
-    public static boolean isOn;
     Network network = new Network();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +79,39 @@ public class MainActivity extends FragmentActivity {
 
 
 
+//      start My service with broadcast receivers
+        i= new Intent(getBaseContext(), MyService.class);
+        ContextCompat.startForegroundService(this, i);
+        MyService.isOn = true;
+
+
         setContentView(R.layout.sample_main);
+
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        if (!(pm.isIgnoringBatteryOptimizations(getPackageName()))) {
+
+
+            //https://stackoverflow.com/questions/26097513/android-simple-alert-dialog
+
+            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+            alertDialog.setTitle("Action Required");
+            alertDialog.setMessage("Please disable battery optimization, to stop unexpected force close.");
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            startActivityForResult(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS), 0);
+                        }
+                    });
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "CANCEL",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+
+        }
+
 
         // Initialize text fragment that displays intro text.
         SimpleTextFragment introFragment = (SimpleTextFragment)
@@ -102,27 +149,28 @@ public class MainActivity extends FragmentActivity {
             case R.id.clear_action:
                 mLogFragment.getLogView().setText("");
                 return true;
-            case R.id.kill:
-                //https://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-on-android
-                    if (i !=null && isOn){
-                        isOn =false;
-                        MyService.isOn = false;
-                        stopService(i);
-                        i = null;
-                        item.setTitle("START");
-                        return true;
-                }else if (i == null | !isOn){
 
-                        isOn = true;
-                        MyService.isOn = true;
-                        i= new Intent(getBaseContext(), MyService.class);
-                        ContextCompat.startForegroundService(this, i);
-                        item.setTitle("STOP");
-                        return true;
-                }
+                //TODO: change
+//              Turn MyService on and off
+                case R.id.kill:
+                    //https://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-on-android
+                        if ( MyService.isOn){
+                            MyService.isOn = false;
+                            stopService(i);
+                            i = null;
+                            item.setTitle("START");
+                            return true;
+                    }else if ( !MyService.isOn){
 
-                return true;
-        }
+                            MyService.isOn = true;
+                            i= new Intent(getBaseContext(), MyService.class);
+                            ContextCompat.startForegroundService(this, i);
+                            item.setTitle("STOP");
+                            return true;
+                        }
+
+                    return true;
+            }
         return false;
     }
 
@@ -157,46 +205,47 @@ public class MainActivity extends FragmentActivity {
         super.onResume();
 
 
+//      old wifi switch (turn wifi on and off)
 
-
-
-        final ArrayList<String> network = new Network().checkNetworkConnection(getApplicationContext());
-
-        Switch aSwitch = (Switch) findViewById(R.id.a_switch);
-        boolean isChecked = aSwitch.isChecked();
-        if(network.contains(getString(R.string.no_wifi_connection))){
-            aSwitch.setChecked(false);
-
-        }else if(network.contains(getString(R.string.wifi_connection))){
-            aSwitch.setChecked(true);
-
-
-        }
-
-        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
-                if(isChecked){
-                    wifiManager.setWifiEnabled(true);
-                }else if(!isChecked){
-                    wifiManager.setWifiEnabled(false);
-
-                }
-
-            }
-
-    });
+//        final ArrayList<String> network = new Network().checkNetworkConnection(getApplicationContext());
+//
+//        Switch aSwitch = (Switch) findViewById(R.id.a_switch);
+//        boolean isChecked = aSwitch.isChecked();
+//        if(network.contains(getString(R.string.no_wifi_connection))){
+//            aSwitch.setChecked(false);
+//
+//        }else if(network.contains(getString(R.string.wifi_connection))){
+//            aSwitch.setChecked(true);
+//
+//
+//        }
+//
+//        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+//
+//                if(isChecked){
+//                    wifiManager.setWifiEnabled(true);
+//                }else if(!isChecked){
+//                    wifiManager.setWifiEnabled(false);
+//
+//                }
+//
+//            }
+//
+//    });
 
 }
 
     @Override
     protected void onPause() {
         super.onPause();
-        i.putExtra("ACTIVITY_ON", false);
 
-        ContextCompat.startForegroundService(getApplicationContext(), i);
+//      Make sure that the dialog activity is not launched
+
+//        i.putExtra("ACTIVITY_ON", false);
+//        ContextCompat.startForegroundService(getApplicationContext(), i);
     }
 
 
@@ -209,20 +258,24 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        i.putExtra("ACTIVITY_ON", false);
 
-        ContextCompat.startForegroundService(getApplicationContext(), i);
+//      Make sure that the dialog activity is not launched
+
+//        i.putExtra("ACTIVITY_ON", false);
+//        ContextCompat.startForegroundService(getApplicationContext(), i);
     }
-
-    //TODO reciver
 
 
     @Override
     protected void onResumeFragments() {
         super.onResumeFragments();
-        i= new Intent(getApplicationContext(), MyService.class);
-        i.putExtra("ACTIVITY_ON", true);
-        ContextCompat.startForegroundService(getApplicationContext(), i);
+
+
+//        Make sure that the dialog activity is not launched
+
+//        i= new Intent(getApplicationContext(), MyService.class);
+//        i.putExtra("ACTIVITY_ON", true);
+//        ContextCompat.startForegroundService(getApplicationContext(), i);
 
     }
 }

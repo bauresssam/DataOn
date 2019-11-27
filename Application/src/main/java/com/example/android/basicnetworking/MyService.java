@@ -1,3 +1,20 @@
+//
+//                Copyright 2019 Samuel Arthur Bauress
+//
+//                Licensed under the Apache License, Version 2.0 (the "License");
+//                you may not use this file except in compliance with the License.
+//                You may obtain a copy of the License at
+//
+//                http://www.apache.org/licenses/LICENSE-2.0
+//
+//                Unless required by applicable law or agreed to in writing, software
+//                distributed under the License is distributed on an "AS IS" BASIS,
+//                WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//                See the License for the specific language governing permissions and
+//                limitations under the License.
+//
+//
+
 package com.example.android.basicnetworking;
 
 import android.app.Notification;
@@ -23,9 +40,6 @@ public class MyService extends Service {
     //TODO: getters and setters
     static boolean dialogOnScreen = false;
 
-    ActivityDialog.CloseDialogReceiver closeDialogReceiver = new ActivityDialog.CloseDialogReceiver();
-
-    MyReceiver broadCastReceiver = new MyReceiver();
 
     @Override
     public void onRebind(Intent intent) {
@@ -51,11 +65,13 @@ super.onRebind(intent);
     public void onCreate() {
         super.onCreate();
 
+//        notification opens app on press
         // Create an explicit intent for an Activity in your app
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
+        //display notification to show service is running
         //https://stackoverflow.com/questions/47531742/startforeground-fail-after-upgrade-to-android-8-1
 
         String NOTIFICATION_CHANNEL_ID = "com.example.android";
@@ -65,15 +81,16 @@ super.onRebind(intent);
         notificationBuilder.setOngoing(true)
                 .setSmallIcon(R.drawable.ic_stat_name)
                 .setContentTitle("App is running in background")
+                .setContentText("Press to open app")
                 .setContentIntent(pendingIntent)
                 .setCategory(Notification.CATEGORY_SERVICE);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             notificationBuilder.setPriority(NotificationManager.IMPORTANCE_MAX);
         }
 
         Notification notification = notificationBuilder.build();
-
         startForeground(2, notification);
 
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -86,7 +103,6 @@ super.onRebind(intent);
             chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
 
         }
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             manager.createNotificationChannel(chan);
@@ -122,31 +138,37 @@ super.onRebind(intent);
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+//TODO: add to the wifi state change to turn wifi of if change this may need new receiver needs to check if wifi has just been disconnected!!!!
+        //TODO: change
+//        if ( !MyService.dialogOnScreen) {
 
+            ActivityDialog.CloseDialogReceiver closeDialogReceiver = new ActivityDialog.CloseDialogReceiver();
+            MyReceiver broadCastReceiver = new MyReceiver();
 
-        if (!(intent.getBooleanExtra("ACTIVITY_ON", true)) && !MyService.dialogOnScreen) {
-
+            //close dialog by calling receiver in ActivityDialog witch in turn calls .dismiss ActivityDialog is closed by
+            // TurnWifiOn method witch closes .finish
 //        https://stackoverflow.com/questions/5888502/how-to-detect-when-wifi-connection-has-been-established-in-android
             IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
             registerReceiver(closeDialogReceiver, intentFilter);
 
-
+            // calls MyReceiver - when network state changes - witch in turn launches TurnWifiOn (dialog:custom) if appropriate.
             //https://developer.android.com/guide/components/broadcasts
             IntentFilter filter = new IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED);
             filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
             registerReceiver(broadCastReceiver, filter);
 
-
+            // calls MyReceiver - when user is presented changes - witch in turn launches TurnWifiOn (dialog:custom) if appropriate.
             //https://stackoverflow.com/questions/47531742/startforeground-fail-after-upgrade-to-android-8-1
             IntentFilter screenStateFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-           // screenStateFilter.addAction(Intent.ACTION_USER_PRESENT);
+            screenStateFilter.addAction(Intent.ACTION_USER_PRESENT);
             registerReceiver(broadCastReceiver, screenStateFilter);
-        }else {
-
-        }
+        //}
+        //TODO: change
 
         return Service.START_STICKY;
     }
+
+
 
     @Override
     public IBinder onBind(Intent intent) {

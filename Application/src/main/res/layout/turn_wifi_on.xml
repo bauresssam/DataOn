@@ -4,8 +4,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
 
-    android:background="#3E80B4"
-    android:orientation="vertical" >
+    android:background="@drawable/layout_bg"
+    android:orientation="horizontal"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/txt_dia"
@@ -13,23 +14,37 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="10dp"
-        android:text="Your data is on"
+        android:text="DATA IS ON"
         android:textColor="@android:color/white"
-        android:textSize="20dp"
+        android:textSize="15dp"
         android:textStyle="bold"
-        android:padding="10dp"/>
+        android:layout_weight="5"
+
+        />
 
 
-    <LinearLayout
+
+
+    <Button
+        android:layout_weight="0"
+        android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="#3E80B4"
-        android:orientation="vertical"
 
-        >
+        android:text="CANCEL"
+        android:textColor="@android:color/white"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"/>
+
+    <Button
+
+android:layout_weight="0"
+        android:id="@+id/button2"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TURN WIFI ON"
+        android:textColor="@android:color/white" />
 
 
-    </LinearLayout>
 
 </LinearLayout>
