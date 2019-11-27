@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 Android BasicNetworking Sample
 ===================================
@@ -68,3 +69,6 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
 WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
 License for the specific language governing permissions and limitations under
 the License.
+=======
+# DataOn
+>>>>>>> a63528214bbf5ddb3ac354a947986b8daf470fdc
